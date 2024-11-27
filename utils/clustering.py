@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN, KMeans
 from sklearn.neighbors import NearestNeighbors
 
-from scoring_utils import clustering_classification_report, score_clustering
+from utils.scoring import clustering_classification_report, score_clustering
 
 ####################################################################
 # Genral Utils for Clustering                                      #

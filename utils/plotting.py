@@ -2,6 +2,7 @@
 from matplotlib import pyplot as plt
 import matplotlib.patches as mpatches
 import matplotlib.lines as mlines
+import numpy as np
 
 
 def plot_2d_clusters(X, y, cluster_labels, cluster_centroids=None):
