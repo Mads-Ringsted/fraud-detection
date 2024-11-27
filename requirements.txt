@@ -1,0 +1,13 @@
+IProgress==0.4
+ipykernel==6.29.5
+ipython==8.29.0
+matplotlib==3.9.2
+matplotlib-inline==0.1.7
+numpy==2.0.2
+pandas==2.2.3
+scikit-learn==1.5.2
+seaborn==0.13.2
+torch==2.5.1
+torchaudio==2.5.1
+torchvision==0.20.1
+umap-learn==0.5.7
