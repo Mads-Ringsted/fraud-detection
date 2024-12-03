@@ -11,3 +11,4 @@ torch==2.5.1
 torchaudio==2.5.1
 torchvision==0.20.1
 umap-learn==0.5.7
+spectralnet==0.1.2
