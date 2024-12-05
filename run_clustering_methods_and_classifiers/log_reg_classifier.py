@@ -2,6 +2,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import GridSearchCV
 import numpy as np
+import pandas as pd
 
 def logistic_regression_classifier(X_train, X_test, y_train, y_test):
     param_grid = {
@@ -33,9 +34,14 @@ def logistic_regression_classifier(X_train, X_test, y_train, y_test):
         "roc_auc": roc_auc_score(y_test, y_prob)
     }
 
-    # Print classification report and best hyperparameters
-    print("Classification Report:")
-    print(classification_report(y_test, y_pred))
-    print("Best Hyperparameters:", grid_search.best_params_)
+    # Get classification report as a dictionary
+    classification_report_dict = classification_report(y_test, y_pred, output_dict=True)
 
-    return metrics
+    # Add classification report and best hyperparameters to metrics
+    metrics['classification_report'] = classification_report_dict
+    metrics['best_hyperparameters'] = grid_search.best_params_
+
+    # Convert metrics dictionary to a DataFrame
+    metrics_df = pd.DataFrame([metrics])
+
+    return metrics_df

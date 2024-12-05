@@ -1,13 +1,13 @@
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import NearestNeighbors
 import networkx as nx
 from community import community_louvain
 
 def louvain_algorithm(X_train, X_test):
-    scaler = StandardScaler()
+    scaler = MinMaxScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
