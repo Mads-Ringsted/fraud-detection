@@ -46,6 +46,22 @@ def louvain_algorithm(X_train, X_test):
     optimal_k = max(modularity_scores, key=lambda x: x[1])[0]
     print(f"Optimal k based on modularity: {optimal_k}")
 
+    # Print also modularity scores for all k values
+    print(modularity_scores)
+
+    # Recompute with optimal_k
+    nn = NearestNeighbors(n_neighbors=optimal_k, metric='cosine')
+    nn.fit(X_train)
+    distances, indices = nn.kneighbors(X_train)
+    
+    G = nx.Graph() 
+    for i, neighbors in enumerate(indices):
+        for j, dist in zip(neighbors, distances[i]):
+            if i != j:
+                G.add_edge(i, j, weight=1 - dist)
+    
+    partition = community_louvain.best_partition(G)
+
     # Map partition dictionary to a list aligned with training data indices
     train_clusters = np.array([partition[i] for i in range(len(X_train))])
 
