@@ -6,7 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 
-def tune_kmeans(X_train, X_test=None, max_clusters=10, random_state=42):
+def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
+
     best_score = -1
     best_k = None
     best_model = None
@@ -28,13 +29,15 @@ def tune_kmeans(X_train, X_test=None, max_clusters=10, random_state=42):
     X_train_labels = best_model.predict(X_train)
     train_clusters = pd.get_dummies(X_train_labels, prefix="Cluster").astype(int)
     
-    if X_test is not None:
-        # Predict cluster labels for X_test
-        X_test_labels = best_model.predict(X_test)
-        test_clusters = pd.get_dummies(X_test_labels, prefix="Cluster").astype(int)
-        return train_clusters, test_clusters
+    # Predict cluster labels for X_test
+    X_test_labels = best_model.predict(X_test)
+    test_clusters = pd.get_dummies(X_test_labels, prefix="Cluster").astype(int)
 
-    return train_clusters
+    # concatenate the cluster labels to the original data
+    X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
+    X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
+
+    return X_train, X_test
 
 
 if __name__ == "__main__":
