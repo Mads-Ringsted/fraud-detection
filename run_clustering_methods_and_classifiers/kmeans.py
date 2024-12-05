@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 
 
-def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
+def kmeans(X_train, X_test, max_clusters=10, random_state=42):
 
     scaler = MinMaxScaler()
     X_train = scaler.fit_transform(X_train)
