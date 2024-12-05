@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-def tune_dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
+def dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
 
     scaler = MinMaxScaler()
     X_train = scaler.fit_transform(X_train)
@@ -65,26 +65,3 @@ def test_dbscan(dbscan, X_train, X_test):
         for j, i in enumerate(indices.flatten())
     ])
     return test_clusters
-
-
-if __name__ == "__main__":
-    data = pd.read_csv('creditcard.csv')
-    X = data.drop(['Class', 'Amount', 'Time'], axis=1)
-    y = data['Class']
-
-    X_scale = MinMaxScaler().fit_transform(X)
-
-    # sample data to reduce class imbalance
-    non_fraud_df = X_scale[y == 0][:2000]
-    fraud_df = X_scale[y == 1]
-
-    X_sample = np.vstack([non_fraud_df, fraud_df])
-    fraud_idx = np.zeros(len(X_sample))
-    fraud_idx[-len(fraud_df):] = 1
-
-    indices = np.arange(len(X_sample))
-    X_train, X_test, y_train, y_test, train_indices, test_indices = train_test_split(X_sample, fraud_idx, indices, test_size=0.2, random_state=42, stratify=fraud_idx)
-
-    train_clusters, test_clusters = tune_dbscan(X_train, X_test)
-
-    print(test_clusters.head())
