@@ -9,7 +9,7 @@ from spectralnet import SpectralNet
 from scipy.stats import mode
 
 
-def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
+def tune_spectral_net(X_train, X_test, max_clusters=10, random_state=42):
     torch.manual_seed(random_state)
 
     scaler = MinMaxScaler()
@@ -81,6 +81,6 @@ if __name__ == "__main__":
     indices = np.arange(len(X_sample))
     X_train, X_test, y_train, y_test, train_indices, test_indices = train_test_split(X_sample, fraud_idx, indices, test_size=0.2, random_state=42, stratify=fraud_idx)
 
-    train_clusters, test_clusters = tune_kmeans(X_train, X_test)
+    train_clusters, test_clusters = tune_spectral_net(X_train, X_test)
 
     print(train_clusters)
