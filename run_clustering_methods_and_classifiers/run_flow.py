@@ -3,7 +3,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from run_clustering_methods_and_classifiers.LouvainAlgorithm import louvain_algorithm
-from run_clustering_methods_and_classifiers.kmeans import kmeans_algorithm
+from run_clustering_methods_and_classifiers.kmeans import kmeans
+from run_clustering_methods_and_classifiers.DBSCAN import dbscan
 
 def main():
     X_train, X_test, y_train, y_test = prepare_data()

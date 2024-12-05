@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-def tune_dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
+def dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
     best_score = -1
     best_params = None
     best_model = None
