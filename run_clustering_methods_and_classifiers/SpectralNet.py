@@ -30,7 +30,7 @@ def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
             train_cluster_labels = model.predict(X_train_tensor)
 
         score = silhouette_score(X_train, train_cluster_labels)
-        print(f"n_clusters: {n_clusters} with silhouette score: {score:.4f}")
+        # print(f"n_clusters: {n_clusters} with silhouette score: {score:.4f}")
 
         if score > best_score:
             best_score = score
