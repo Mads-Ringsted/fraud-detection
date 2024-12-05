@@ -8,6 +8,10 @@ from sklearn.preprocessing import MinMaxScaler
 
 def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
 
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
     best_score = -1
     best_k = None
     best_model = None
@@ -34,10 +38,10 @@ def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
     test_clusters = pd.get_dummies(X_test_labels, prefix="Cluster").astype(int)
 
     # concatenate the cluster labels to the original data
-    X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
-    X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
+    # X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
+    # X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
 
-    return X_train, X_test
+    return train_clusters, test_clusters
 
 
 if __name__ == "__main__":

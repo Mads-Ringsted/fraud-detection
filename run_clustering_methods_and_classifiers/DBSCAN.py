@@ -7,6 +7,11 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 def tune_dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
+
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
     best_score = -1
     best_params = None
     best_model = None
@@ -43,10 +48,10 @@ def tune_dbscan(X_train, X_test, eps_list=None, min_samples_list=None):
     test_clusters = pd.get_dummies(test_labels, prefix="Cluster").astype(int)
 
     # Concatenate the cluster labels to the original data
-    X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
-    X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
+    # X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
+    # X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
 
-    return X_train, X_test
+    return train_clusters, test_clusters
 
 def test_dbscan(dbscan, X_train, X_test):
     core_samples_mask = dbscan.core_sample_indices_
