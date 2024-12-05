@@ -6,21 +6,11 @@ from sklearn.neighbors import NearestNeighbors
 import networkx as nx
 from community import community_louvain
 
-# Load dataset
-df = pd.read_csv('creditcard.csv')
-
-# Separate features and target variable
-X = df.drop(['Class'], axis=1)
-y = df['Class']
-
-# Standardize features
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
-
-
 def louvain_algorithm(X_train, X_test):
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
     modularity_scores = []
     k_values = range(5, 30, 5) 
 
@@ -87,8 +77,7 @@ def louvain_algorithm(X_train, X_test):
     # Compute distances for test data
     test_cluster_distances = compute_cluster_distances(X_test, cluster_prototypes)
 
-    # Combine original features with cluster distance features
-    X_train_with_features = np.hstack((X_train, train_cluster_distances))
-    X_test_with_features = np.hstack((X_test, test_cluster_distances))
+    train_cluster_distances_df = pd.DataFrame(train_cluster_distances)
+    test_cluster_distances_df = pd.DataFrame(test_cluster_distances)
 
-    return X_train_with_features, X_test_with_features
+    return train_cluster_distances_df, test_cluster_distances_df
