@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.cluster import DBSCAN, KMeans
 from sklearn.neighbors import NearestNeighbors
 
+from sklearn.metrics import silhouette_score, davies_bouldin_score
 from utils.scoring import clustering_classification_report, score_clustering
 
 ####################################################################
@@ -93,8 +94,8 @@ def test_dbscan(dbscan, X_train, X_test):
                             for j, i in enumerate(indices.flatten())])
     return test_clusters
 
-def evaluate_dbscan(X_train, X_test, y_train, y_test, eps):
-    dbscan = fit_dbscan(X_train, eps)
+def evaluate_dbscan(X_train, X_test, y_train, y_test, eps, min_samples):
+    dbscan = fit_dbscan(X_train, eps, min_samples)
     train_clusters = dbscan.labels_
     test_clusters = test_dbscan(dbscan, X_train, X_test)
 
@@ -104,23 +105,75 @@ def evaluate_dbscan(X_train, X_test, y_train, y_test, eps):
     train_classification_report = clustering_classification_report(train_clusters, y_train)
     test_classification_report = clustering_classification_report(test_clusters, y_test)
 
-    clustering_metrics = format_clustering_metrics(train_clustering_scores, test_clustering_scores, eps=eps)
-    classification_metrics = format_classification_metrics(train_classification_report, test_classification_report, eps=eps)
+    clustering_metrics = format_clustering_metrics(train_clustering_scores, test_clustering_scores, eps=eps, min_samples=min_samples)
+    classification_metrics = format_classification_metrics(train_classification_report, test_classification_report, eps=eps, min_samples=min_samples)
     return clustering_metrics, classification_metrics
 
-def score_dbscan(X_train, X_test, y_train, y_test, eps=None):
+def score_dbscan(X_train, X_test, y_train, y_test, eps=None, min_samples=None):
     if eps is None:
         eps = [0.2, 0.3, 0.4]
+    if min_samples is None:
+        min_samples = [5, 10]
     clustering_metrics_list = []
     classification_metrics_list = []
     for e in eps:
-        try:
-            clustering_scores, classification_scores = evaluate_dbscan(X_train, X_test, y_train, y_test, e)
-            clustering_metrics_list.append(clustering_scores)
-            classification_metrics_list.append(classification_scores)
-        except ValueError:
-            print(f'Fitting DBSCAN with eps={e} leads to a single cluster. Skipping...')
+        for ms in min_samples:
+            try:
+                clustering_scores, classification_scores = evaluate_dbscan(X_train, X_test, y_train, y_test, e, ms)
+                clustering_metrics_list.append(clustering_scores)
+                classification_metrics_list.append(classification_scores)
+            except ValueError:
+                print(f'Fitting DBSCAN with eps={e} and min_samples={ms} leads to a single cluster. Skipping...')
     return clustering_metrics_list, classification_metrics_list
 
+def fit_dbscan(X_train, eps, min_samples):
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    dbscan.fit(X_train)
+    return dbscan
+
+####################################################################
+# Hyperparameter Tuning Utils                                      #
+####################################################################
+
+def evaluate_clustering_assignments(X, labels):
+    """Compute Silhouette Score and Davies-Bouldin Index for clustering."""
+    if len(set(labels)) > 1:  # Ensure more than one cluster
+        silhouette = silhouette_score(X, labels)
+        davies_bouldin = davies_bouldin_score(X, labels)
+        return silhouette, davies_bouldin
+    else:
+        return -1, float('inf')  # Invalid clustering
+
+def tune_kmeans_dbscan(X, method, params, scoring='combined'):
+    """Evaluate KMeans or DBSCAN with Silhouette and Davies-Bouldin Index."""
+    best_score = float('-inf')
+    best_params = None
+
+    for param in params:
+        if method == 'kmeans':
+            kmeans = KMeans(**param, random_state=42)
+            labels = kmeans.fit_predict(X)
+        elif method == 'dbscan':
+            dbscan = DBSCAN(**param)
+            labels = dbscan.fit_predict(X)
+        
+
+        # Combine the two metrics (normalize DBI by its range for simplicity)
+        if scoring == 'combined':
+            silhouette, davies_bouldin = evaluate_clustering_assignments(X, labels)
+            silhouette = (silhouette + 1) / 2
+            combined_score = silhouette - davies_bouldin
+            score = combined_score
+        elif scoring == 'silhouette':
+            score = silhouette_score(X, labels)
+        elif scoring == 'davies_bouldin':
+            # sign to make it maximization problem
+            score = -davies_bouldin_score(X, labels)
 
 
+        if score > best_score:
+            best_score = score
+            best_params = param
+
+    print(f"Best Params: {best_params}, Best Combined Score: {best_score:.4f}")
+    return best_params, best_score
