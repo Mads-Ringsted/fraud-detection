@@ -27,14 +27,14 @@ def test_louvain(X_train, X_test, y_train, y_test):
     X_test = pd.concat([X_test, test_cluster_distances_df], axis=1)
 
     # Save all the data as CSV
-    X_train.to_csv('/mnt/dataSofus/X_train_louvain.csv', index=False)
-    X_test.to_csv('/mnt/dataSofus/X_test_louvain.csv', index=False)
+    X_train.to_csv('X_train_louvain.csv', index=False)
+    X_test.to_csv('X_test_louvain.csv', index=False)
 
     # Run log_reg_classifier
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
 
     # Save the results as a CSV
-    results.to_csv('/mnt/dataSofus/results_louvain.csv', index=False)
+    results.to_csv('results_louvain.csv', index=False)
 
 
 
@@ -45,14 +45,14 @@ def test_kmeans(X_train, X_test, y_train, y_test):
     X_test = pd.concat([X_test, test_clusters], axis=1)
 
     # Save all the data as CSV
-    X_train.to_csv('/mnt/dataSofus/X_train_kmeans.csv', index=False)
-    X_test.to_csv('/mnt/dataSofus/X_test_kmeans.csv', index=False)
+    X_train.to_csv('X_train_kmeans.csv', index=False)
+    X_test.to_csv('X_test_kmeans.csv', index=False)
 
     # Run log_reg_classifier
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
 
     # Save the results as a CSV
-    results.to_csv('/mnt/dataSofus/results_kmeans.csv', index=False)
+    results.to_csv('results_kmeans.csv', index=False)
 
 
 
@@ -63,14 +63,14 @@ def test_dbscan(X_train, X_test, y_train, y_test):
     X_test = pd.concat([X_test, test_clusters], axis=1)
 
     # Save all the data as CSV
-    X_train.to_csv('/mnt/dataSofus/X_train_dbscan.csv', index=False)
-    X_test.to_csv('/mnt/dataSofus/X_test_dbscan.csv', index=False)
+    X_train.to_csv('X_train_dbscan.csv', index=False)
+    X_test.to_csv('X_test_dbscan.csv', index=False)
 
     # Run log_reg_classifier
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
 
     # Save the results as a CSV
-    results.to_csv('/mnt/dataSofus/results_dbscan.csv', index=False)
+    results.to_csv('results_dbscan.csv', index=False)
 
 
 
@@ -81,14 +81,14 @@ def test_spectral_net(X_train, X_test, y_train, y_test):
     X_test = pd.concat([X_test, test_clusters], axis=1)
 
     # Save all the data as CSV
-    X_train.to_csv('/mnt/dataSofus/X_train_spectral_net.csv', index=False)
-    X_test.to_csv('/mnt/dataSofus/X_test_spectral_net.csv', index=False)
+    X_train.to_csv('X_train_spectral_net.csv', index=False)
+    X_test.to_csv('X_test_spectral_net.csv', index=False)
 
     # Run log_reg_classifier
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
 
     # Save the results as a CSV
-    results.to_csv('/mnt/dataSofus/results_spectral_net.csv', index=False)
+    results.to_csv('results_spectral_net.csv', index=False)
 
 
 
@@ -99,14 +99,14 @@ def test_spectral_clustering(X_train, X_test, y_train, y_test):
     X_test = pd.concat([X_test, test_clusters], axis=1)
 
     # Save all the data as CSV
-    X_train.to_csv('/mnt/dataSofus/X_train_spectral_clustering.csv', index=False)
-    X_test.to_csv('/mnt/dataSofus/X_test_spectral_clustering.csv', index=False)
+    X_train.to_csv('X_train_spectral_clustering.csv', index=False)
+    X_test.to_csv('X_test_spectral_clustering.csv', index=False)
 
     # Run log_reg_classifier
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
 
     # Save the results as a CSV
-    results.to_csv('/mnt/dataSofus/results_spectral_clustering.csv', index=False)
+    results.to_csv('results_spectral_clustering.csv', index=False)
 
 
 def prepare_data():
