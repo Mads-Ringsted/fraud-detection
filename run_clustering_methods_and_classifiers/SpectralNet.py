@@ -9,8 +9,13 @@ from spectralnet import SpectralNet
 from scipy.stats import mode
 
 
-def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
+def tune_spectral_net(X_train, X_test, max_clusters=10, random_state=42):
     torch.manual_seed(random_state)
+
+    scaler = MinMaxScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
     best_score = -1
     best_k = None
     best_model = None
@@ -52,10 +57,10 @@ def tune_kmeans(X_train, X_test, max_clusters=10, random_state=42):
     test_clusters = pd.get_dummies(test_cluster_labels, prefix="Cluster").astype(int)
 
     # concatenate the cluster labels to the original data
-    X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
-    X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
+    # X_train = pd.concat([pd.DataFrame(X_train), train_clusters], axis=1)
+    # X_test = pd.concat([pd.DataFrame(X_test), test_clusters], axis=1)
 
-    return X_train, X_test
+    return train_clusters, test_clusters
 
 
 if __name__ == "__main__":
@@ -66,7 +71,7 @@ if __name__ == "__main__":
     X_scale = MinMaxScaler().fit_transform(X)
 
     # sample data to reduce class imbalance
-    non_fraud_df = X_scale[y == 0]#[:2000]
+    non_fraud_df = X_scale[y == 0][:200]
     fraud_df = X_scale[y == 1]
 
     X_sample = np.vstack([non_fraud_df, fraud_df])
@@ -76,6 +81,6 @@ if __name__ == "__main__":
     indices = np.arange(len(X_sample))
     X_train, X_test, y_train, y_test, train_indices, test_indices = train_test_split(X_sample, fraud_idx, indices, test_size=0.2, random_state=42, stratify=fraud_idx)
 
-    train_clusters, test_clusters = tune_kmeans(X_train, X_test)
+    train_clusters, test_clusters = tune_spectral_net(X_train, X_test)
 
     print(train_clusters)
