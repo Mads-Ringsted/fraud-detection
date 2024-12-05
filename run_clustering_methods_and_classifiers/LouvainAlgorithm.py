@@ -19,9 +19,10 @@ X_scaled = scaler.fit_transform(X)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
+
 def louvain_algorithm(X_train, X_test):
     modularity_scores = []
-    k_values = range(5, 30, 5)  # Example range for k   
+    k_values = range(5, 30, 5) 
 
     for k in k_values:
         # Construct KNN graph
