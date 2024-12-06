@@ -1,4 +1,3 @@
-python
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import RandomizedSearchCV

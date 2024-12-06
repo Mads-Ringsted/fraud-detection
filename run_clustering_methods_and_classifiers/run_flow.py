@@ -13,9 +13,9 @@ def main():
     X_train, X_test, y_train, y_test = prepare_data()
 
     #test_louvain(X_train, X_test, y_train, y_test)
-    test_kmeans(X_train, X_test, y_train, y_test)
-    test_dbscan(X_train, X_test, y_train, y_test)
-    test_spectral_clustering(X_train, X_test, y_train, y_test)
+    #test_kmeans(X_train, X_test, y_train, y_test)
+    #test_dbscan(X_train, X_test, y_train, y_test)
+    #test_spectral_clustering(X_train, X_test, y_train, y_test)
     results = logistic_regression_classifier(X_train, X_test, y_train, y_test)
     results.to_csv('baseline.csv', index=False)
 
