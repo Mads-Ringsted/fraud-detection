@@ -1,33 +1,36 @@
+python
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import RandomizedSearchCV
 import numpy as np
 import pandas as pd
-# ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
 
 def logistic_regression_classifier(X_train, X_test, y_train, y_test):
-    param_grid = {
-        'C': [0.01, 0.1, 1, 10, 100],
-        'penalty': ['l2', 'l1'],
+    param_dist = {
+        'C': np.logspace(-2, 2, 20),
+        'penalty': ['l1', 'l2'],
         'solver': ['liblinear', 'saga']
     }
 
-    model = LogisticRegression(random_state=42)
+    model = LogisticRegression(random_state=42, max_iter=10000)
 
-    # Use GridSearchCV for hyperparameter tuning
-    grid = GridSearchCV(
+    # Use RandomizedSearchCV for faster hyperparameter tuning
+    rand_search = RandomizedSearchCV(
         estimator=model,
-        param_grid=param_grid,
+        param_distributions=param_dist,
+        n_iter=10,
         scoring='neg_log_loss',
         cv=3,
-        verbose=1
+        verbose=1,
+        n_jobs=-1,
+        random_state=42
     )
-    grid.fit(X_train, y_train)
+    rand_search.fit(X_train, y_train)
 
     # Get the best model
-    best_model = grid.best_estimator_
+    best_model = rand_search.best_estimator_
 
     # Predict on the test data
     y_pred = best_model.predict(X_test)
@@ -47,7 +50,7 @@ def logistic_regression_classifier(X_train, X_test, y_train, y_test):
 
     # Add classification report and best hyperparameters to metrics
     metrics['classification_report'] = classification_report_dict
-    metrics['best_hyperparameters'] = grid.best_params_
+    metrics['best_hyperparameters'] = rand_search.best_params_
 
     # Convert metrics dictionary to a DataFrame
     metrics_df = pd.DataFrame([metrics])
