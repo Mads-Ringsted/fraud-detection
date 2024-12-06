@@ -7,14 +7,16 @@ import networkx as nx
 from community import community_louvain
 
 def louvain_algorithm(X_train, X_test):
+    print("START")
     scaler = MinMaxScaler()
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
     modularity_scores = []
-    k_values = range(5, 30, 5) 
+    k_values = range(5, 15, 5) 
 
     for k in k_values:
+        print(f"Computing modularity for k={k}...")
         # Construct KNN graph
         nn = NearestNeighbors(n_neighbors=k, metric='cosine')
         nn.fit(X_train)
@@ -26,11 +28,12 @@ def louvain_algorithm(X_train, X_test):
             for j, dist in zip(neighbors, distances[i]):
                 if i != j:
                     G.add_edge(i, j, weight=1 - dist)
-        
+         
         # Apply Louvain clustering
         partition = community_louvain.best_partition(G)
         modularity = community_louvain.modularity(partition, G)
         modularity_scores.append((k, modularity))
+        print(f"Modularity for k={k}: {modularity}")
 
     # Find k with the highest modularity
     optimal_k = max(modularity_scores, key=lambda x: x[1])[0]
@@ -57,6 +60,7 @@ def louvain_algorithm(X_train, X_test):
 
     # Compute cluster prototypes (mean vectors of clusters)
     cluster_ids = np.unique(train_clusters)
+    print(f"Number of clusters: {len(cluster_ids)}") 
     cluster_prototypes = {}
 
     for cluster_id in cluster_ids:
@@ -77,7 +81,4 @@ def louvain_algorithm(X_train, X_test):
     # Compute distances for test data
     test_cluster_distances = compute_cluster_distances(X_test, cluster_prototypes)
 
-    train_cluster_distances_df = pd.DataFrame(train_cluster_distances)
-    test_cluster_distances_df = pd.DataFrame(test_cluster_distances)
-
-    return train_cluster_distances_df, test_cluster_distances_df
+    return train_cluster_distances, test_cluster_distances
